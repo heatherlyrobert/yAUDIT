@@ -39,7 +39,7 @@ yAUDIT_full             (char a_type, char c_flag, char c_naming, char a_dir [LE
    if (r_fuid  != NULL)  *r_fuid  = -1;
    if (r_fuser != NULL)  strcpy  (r_fuser , "");
    /*---(prepare)------------------------*/
-   rc = yenv_audit_prepare (a_type, c_flag, c_naming, a_dir, a_file, x_etdesc, &c_check, &c_force, &c_fix);
+   rc = yaudit_prepare     (a_type, c_flag, c_naming, a_dir, a_file, x_etdesc, &c_check, &c_force, &c_fix);
    if (rc > rc_final)  rc_final = rc;
    DEBUG_YENV   yLOG_complex ("prepare"   , "%4d rc, %4d final", rc, rc_final);
    --rce;  if (rc < 0) {
@@ -47,7 +47,7 @@ yAUDIT_full             (char a_type, char c_flag, char c_naming, char a_dir [LE
       return rce;
    }
    /*---(name quality)-------------------*/
-   rc = yaudit_name_quality  (a_type, c_naming, a_dir, a_file, &x_style, x_full);
+   rc = yaudit_quality       (a_type, c_naming, a_dir, a_file, &x_style, x_full);
    if (rc > rc_final)  rc_final = rc;
    DEBUG_YENV   yLOG_complex ("quality"   , "%4d rc, %4d final", rc, rc_final);
    --rce;  if (rc < 0) {
@@ -55,7 +55,7 @@ yAUDIT_full             (char a_type, char c_flag, char c_naming, char a_dir [LE
       return rce;
    }
    /*---(prepare)------------------------*/
-   rc = yaudit_name_standard (a_type, c_naming, x_style, a_dir, a_file, a_prefix, a_suffix);
+   rc = yaudit_standard      (a_type, c_naming, x_style, a_dir, a_file, a_prefix, a_suffix);
    if (rc > rc_final)  rc_final = rc;
    DEBUG_YENV   yLOG_complex ("standard"  , "%4d rc, %4d final", rc, rc_final);
    --rce;  if (rc < 0) {
@@ -73,7 +73,7 @@ yAUDIT_full             (char a_type, char c_flag, char c_naming, char a_dir [LE
    /*---(name sign-off)------------------*/
    ySCORE_mark ("NAME"    , '´');
    /*---(expected)-----------------------*/
-   rc = yenv_audit_expect   (a_type, x_eowner, x_egroup, x_eperms, &x_euid, &x_egid, &x_eprm, x_edisp);
+   rc = yaudit_expect  (a_type, x_eowner, x_egroup, x_eperms, &x_euid, &x_egid, &x_eprm, x_edisp);
    if (rc > rc_final)  rc_final = rc;
    DEBUG_YENV   yLOG_complex ("expect"    , "%4d rc, %4d final", rc, rc_final);
    --rce;  if (rc < 0) {
@@ -81,7 +81,7 @@ yAUDIT_full             (char a_type, char c_flag, char c_naming, char a_dir [LE
       return rce;
    }
    /*---(extra)--------------------------*/
-   rc = yenv_audit_extra    (a_type, a_major, a_minor, a_ttype, a_target, a_epoch, a_bytes, a_inode, a_hash);
+   rc = yaudit_extra   (a_type, a_major, a_minor, a_ttype, a_target, a_epoch, a_bytes, a_inode, a_hash);
    if (rc > rc_final)  rc_final = rc;
    DEBUG_YENV   yLOG_complex ("extra"     , "%4d rc, %4d final", rc, rc_final);
    --rce;  if (rc < 0) {
@@ -180,7 +180,7 @@ yAUDIT_localdir         (char a_dir [LEN_PATH], char r_full [LEN_PATH], int *r_f
 }
 
 char
-AUDIT_central           (char c_flag, char a_dir [LEN_PATH], char a_file [LEN_PATH], char a_prefix [LEN_TERSE], char a_suffix [LEN_TERSE], char r_full [LEN_PATH], int *r_fuid, char r_fuser [LEN_USER])
+yAUDIT_central          (char c_flag, char a_dir [LEN_PATH], char a_file [LEN_PATH], char a_prefix [LEN_TERSE], char a_suffix [LEN_TERSE], char r_full [LEN_PATH], int *r_fuid, char r_fuser [LEN_USER])
 {
    return yAUDIT_full     (YENV_REG  , c_flag, YENV_CENTRAL, a_dir, a_file, "-", "-", "-", -1, -1, YENV_NONE, "", a_prefix, a_suffix, -1, -1, -1, NULL, r_full, r_fuid, r_fuser);
 }

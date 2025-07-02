@@ -26,7 +26,7 @@ yaudit_typing           (char a_etype, char a_etdesc [LEN_TERSE], char a_atype, 
       } else {
          ySCORE_mark ("RTYPE"   , '?');
          sprintf (x_msg, "%s (%c) entry does not exist, AND not in FORCE mode"     , a_etdesc, a_etype);
-         yenv_audit_fatal ("RECHECK" , x_msg);
+         yaudit_fatal     ("RECHECK" , x_msg);
          return RC_FAILED;
       }
    }
@@ -50,7 +50,7 @@ yaudit_typing           (char a_etype, char a_etdesc [LEN_TERSE], char a_atype, 
    }
    /*---(not-matched)--------------------*/
    sprintf (x_msg, "wanted %s (%c) entry ACTUALLY refers to a %s (%c)", a_etdesc, a_etype, a_atdesc, a_atype);
-   yenv_audit_fatal ("RECHECK" , x_msg);
+   yaudit_fatal     ("RECHECK" , x_msg);
    return RC_FAILED;
 }
 
@@ -83,9 +83,9 @@ yaudit_final            (char a_full [LEN_PATH], char a_etype, char a_etdesc [LE
    x_atype = yENV_detail (a_full, x_atdesc, &x_auid, x_aowner, &x_agid, x_agroup, &x_aprm, x_aperms, x_adisp, NULL, NULL, &x_amajor, &x_aminor, x_atarget, NULL, &x_inode, NULL);
    DEBUG_YENV   yLOG_value   ("detail"    , x_atype);
    --rce;  if (x_atype <= 0) {
-      yenv_audit_fatal ("RTYPE"   , '°');
+      yaudit_fatal     ("RTYPE"   , '°');
       sprintf (x_msg, "file check generated a hard error (%d)", x_atype);
-      yenv_audit_fatal ("RECHECK" , x_msg);
+      yaudit_fatal     ("RECHECK" , x_msg);
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
@@ -225,7 +225,7 @@ yaudit_final            (char a_full [LEN_PATH], char a_etype, char a_etdesc [LE
    }
    /*---(finalize)-----------------------*/
    if (rc_final < 0) {
-      yenv_audit_fatal ("RECHECK"  , "");
+      yaudit_fatal     ("RECHECK"  , "");
    } else {
       ySCORE_mark ("RECHECK" , '´');
       ySCORE_mark ("FINAL"   , 'Ï');

@@ -38,8 +38,8 @@
 /*········· ··········· ´·····························´········································*/
 #define     P_VERMAJOR  "1.--, production improvements"
 #define     P_VERMINOR  "1.0-, porting from yENV into separate library"
-#define     P_VERNUM    "1.0b"
-#define     P_VERTXT    "ySCORE integration done and its string test passes"
+#define     P_VERNUM    "1.0c"
+#define     P_VERTXT    "main audit abilities pulled over and unit tested"
 /*········· ··········· ´·····························´········································*/
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -215,13 +215,13 @@ char        yaudit_hacked           (char a_full [LEN_PATH], int a_epoch, long a
 
 /*===[[ yENV_name.c ]]========================================================*/
 /*········· ´······················ ´·········································*/
-char        yaudit_name_quality     (char a_type, char c_naming, char a_dir [LEN_PATH], char a_file [LEN_PATH], char *r_style, char r_full [LEN_PATH]);
-char        yaudit_name__dots       (char c_naming, char a_file [LEN_PATH], char a_prefix [LEN_TERSE], char a_suffix [LEN_TERSE], short *r_beg, short *r_end);
-char        yaudit_name__prefix     (char a_file [LEN_PATH], short a_beg, char a_prefix [LEN_TERSE], char r_prefix [LEN_TERSE]);
-char        yaudit_name__suffix     (char a_file [LEN_PATH], short a_end, char a_suffix [LEN_TERSE]);
-char        yaudit_name_standard    (char a_type, char c_naming, char c_style, char a_dir [LEN_PATH], char a_file [LEN_PATH], char a_prefix [LEN_TERSE], char a_suffix [LEN_TERSE]);
-char        yaudit_name_local       (int a_ruid, char a_ruser [LEN_USER], char a_full [LEN_PATH], char b_owner [LEN_USER], char b_group [LEN_USER], char b_perms [LEN_TERSE]);
-char        yaudit_name_central     (int a_ruid, char a_ruser [LEN_USER], char a_full [LEN_PATH], char b_owner [LEN_USER], char b_group [LEN_USER], char b_perms [LEN_TERSE]);
+char        yaudit_quality          (char a_type, char c_naming, char a_dir [LEN_PATH], char a_file [LEN_PATH], char *r_style, char r_full [LEN_PATH]);
+char        yaudit_dots             (char c_naming, char a_file [LEN_PATH], char a_prefix [LEN_TERSE], char a_suffix [LEN_TERSE], short *r_beg, short *r_end);
+char        yaudit__prefix          (char a_file [LEN_PATH], short a_beg, char a_prefix [LEN_TERSE], char r_prefix [LEN_TERSE]);
+char        yaudit__suffix          (char a_file [LEN_PATH], short a_end, char a_suffix [LEN_TERSE]);
+char        yaudit_standard         (char a_type, char c_naming, char c_style, char a_dir [LEN_PATH], char a_file [LEN_PATH], char a_prefix [LEN_TERSE], char a_suffix [LEN_TERSE]);
+char        yaudit__local           (int a_ruid, char a_ruser [LEN_USER], char a_full [LEN_PATH], char b_owner [LEN_USER], char b_group [LEN_USER], char b_perms [LEN_TERSE]);
+char        yaudit__central         (int a_ruid, char a_ruser [LEN_USER], char a_full [LEN_PATH], char b_owner [LEN_USER], char b_group [LEN_USER], char b_perms [LEN_TERSE]);
 char        yaudit_name_location    (char a_type, char c_naming, char a_full [LEN_PATH], char b_owner [LEN_USER], char b_group [LEN_USER], char b_perms [LEN_TERSE]);
 /*---(done)-----------------*/
 
