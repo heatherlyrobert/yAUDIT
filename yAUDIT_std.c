@@ -23,7 +23,7 @@ yaudit__prefix            (char a_file [LEN_PATH], short a_beg, char a_prefix [L
       return RC_ACK;
    }
    /*---(scoring)------------------------*/
-   ySCORE_mark ("NPREFIX" , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "NPREFIX" , '°');
    /*---(save-back)----------------------*/
    strlcpy (t, a_file, a_beg + 2);
    if (r_pre != NULL)  strlcpy (r_pre, t, LEN_TERSE);
@@ -40,7 +40,7 @@ yaudit__prefix            (char a_file [LEN_PATH], short a_beg, char a_prefix [L
          DEBUG_YENV    yLOG_exitr   (__FUNCTION__, rce);
          return rce;
       }
-      ySCORE_mark ("NPREFIX" , 'u');
+      ySCORE_mark (myAUDIT.m_yscore, "NPREFIX" , 'u');
    }
    /*---(normal option)------------------*/
    else {
@@ -53,7 +53,7 @@ yaudit__prefix            (char a_file [LEN_PATH], short a_beg, char a_prefix [L
          DEBUG_YENV    yLOG_exitr   (__FUNCTION__, rce);
          return rce;
       }
-      ySCORE_mark ("NPREFIX" , 'p');
+      ySCORE_mark (myAUDIT.m_yscore, "NPREFIX" , 'p');
    }
    /*---(complete)-----------------------*/
    DEBUG_YENV   yLOG_exit    (__FUNCTION__);
@@ -77,7 +77,7 @@ yaudit__suffix          (char a_file [LEN_PATH], short a_end, char a_suffix [LEN
       return RC_ACK;
    }
    /*---(scoring)------------------------*/
-   ySCORE_mark ("NSUFFIX" , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "NSUFFIX" , '°');
    /*---(normal option)------------------*/
    DEBUG_YENV    yLOG_info    ("a_suffix"  , a_suffix);
    strlcpy (t, a_file + a_end, LEN_TERSE);
@@ -89,7 +89,7 @@ yaudit__suffix          (char a_file [LEN_PATH], short a_end, char a_suffix [LEN
       return rce;
    }
    /*---(scoring)------------------------*/
-   ySCORE_mark ("NSUFFIX" , 's');
+   ySCORE_mark (myAUDIT.m_yscore, "NSUFFIX" , 's');
    /*---(complete)-----------------------*/
    DEBUG_YENV   yLOG_exit    (__FUNCTION__);
    return RC_POSITIVE;
@@ -161,7 +161,7 @@ yaudit_standard         (char a_type, char c_naming, char c_style, char a_dir [L
       return RC_ACK;
    }
    /*---(remaining description)----------*/
-   ySCORE_mark ("NDESC"   , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "NDESC"   , '°');
    l = strlen (a_file);
    switch (x_type) {
    case 'b' :  x_rem = x_end - x_beg - 1;  break;
@@ -174,7 +174,7 @@ yaudit_standard         (char a_type, char c_naming, char c_style, char a_dir [L
       DEBUG_YENV    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   ySCORE_mark ("NDESC"   , 'd');
+   ySCORE_mark (myAUDIT.m_yscore, "NDESC"   , 'd');
    /*---(done)---------------------------*/
    switch (x_type) {
    case 'b' :  yURG_msg ('-', "prefix å%sæ and suffix å%sæ match given standard", x_pre, a_suffix);  break;

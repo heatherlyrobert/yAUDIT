@@ -4,8 +4,8 @@
 
 
 
-char ySCORE_nocheck    (void) { return ySCORE_mask ("PRá "      , "FIXES"     ); }
-char ySCORE_nohacked   (void) { return ySCORE_mask ("HKá "      , "HACKED"    ); }
+char ySCORE_nocheck    (void) { return ySCORE_mask (myAUDIT.m_yscore, "PRá "      , "FIXES"     ); }
+char ySCORE_nohacked   (void) { return ySCORE_mask (myAUDIT.m_yscore, "HKá "      , "HACKED"    ); }
 
 
 

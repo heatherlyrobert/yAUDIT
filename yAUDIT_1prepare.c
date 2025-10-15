@@ -23,8 +23,8 @@ yaudit_fatal            (char a_label [LEN_LABEL], char a_msg [LEN_HUND])
    }
    /*---(failure marks)------------------*/
    DEBUG_YENV   yLOG_info    ("a_label"   , a_label);
-   ySCORE_mark (a_label   , '°');
-   ySCORE_mark ("FINAL"   , '°');
+   ySCORE_mark (myAUDIT.m_yscore, a_label   , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "FINAL"   , '°');
    /*---(find mask beginning)------------*/
    switch (a_label [0]) {
    case 'N' : strcpy (x_beg, "EXá ");  break;
@@ -38,7 +38,7 @@ yaudit_fatal            (char a_label [LEN_LABEL], char a_msg [LEN_HUND])
    }
    DEBUG_YENV   yLOG_info    ("x_beg"     , x_beg);
    /*---(masking for readability)--------*/
-   if (strcmp (x_beg, "") != 0)   ySCORE_mask (x_beg, "RECHECK");
+   if (strcmp (x_beg, "") != 0)   ySCORE_mask (myAUDIT.m_yscore, x_beg, "RECHECK");
    ySCORE_nohacked     ();
    /*---(complete)-----------------------*/
    DEBUG_YENV    yLOG_exit    (__FUNCTION__);
@@ -60,17 +60,18 @@ yaudit_prepare          (char a_type, char c_flag, char c_naming, char a_dir [LE
    DEBUG_YENV   yLOG_enter   (__FUNCTION__);
    /*---(initialize)---------------------*/
    /*> yenv_score_clear ();                                                           <*/
-   ySCORE_init (myAUDIT_table);
+   ySCORE_init  (myAUDIT_table, '-', &(myAUDIT.m_yscore));
+   ySCORE_clear (myAUDIT.m_yscore);
    /*---(default)------------------------*/
    if (r_tdesc != NULL)  strcpy (r_tdesc, "");
    if (r_check != NULL)  *r_check = '-';
    if (r_force != NULL)  *r_force = '-';
    if (r_fix   != NULL)  *r_fix   = '-';
    /*---(check a_type)-------------------*/
-   ySCORE_mark ("ETYPE"   , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "ETYPE"   , '°');
    DEBUG_YENV   yLOG_char    ("a_type"    , a_type);
    --rce;  if (a_type == 0 || strchr (YENV_TYPES, a_type) == NULL) {
-      ySCORE_mask ("NMá ", "NAME");
+      ySCORE_mask (myAUDIT.m_yscore, "NMá ", "NAME");
       sprintf (x_msg, "a_type (%3d) must be one of å%sæ (blatant error)", a_type, YENV_TYPES);
       yaudit_fatal     ("EXPECT"  , x_msg);
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
@@ -78,9 +79,9 @@ yaudit_prepare          (char a_type, char c_flag, char c_naming, char a_dir [LE
    }
    /*---(type description)---------------*/
    strlcpy (x_tdesc, yENV_typedesc (a_type), LEN_TERSE);
-   if (strcmp (x_tdesc, "WTF") != 0)   ySCORE_mark ("ETYPE"   , a_type);
+   if (strcmp (x_tdesc, "WTF") != 0)   ySCORE_mark (myAUDIT.m_yscore, "ETYPE"   , a_type);
    /*---(check c_naming)-----------------*/
-   ySCORE_mark ("NCONF"   , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "NCONF"   , '°');
    DEBUG_YENV   yLOG_char    ("c_naming"  , c_naming);
    --rce;  if (c_naming == 0 || strchr (YENV_NAMING, c_naming) == NULL) {
       sprintf (x_msg, "c_naming flag (%c) must be one of å%sæ (blatant error)", c_naming, YENV_NAMING);
@@ -88,40 +89,40 @@ yaudit_prepare          (char a_type, char c_flag, char c_naming, char a_dir [LE
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   ySCORE_mark ("NCONF"   , c_naming);
+   ySCORE_mark (myAUDIT.m_yscore, "NCONF"   , c_naming);
    /*---(check a_dir)--------------------*/
-   ySCORE_mark ("NDIR"    , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "NDIR"    , '°');
    DEBUG_YENV   yLOG_point   ("a_dir"     , a_dir);
    --rce;  if (a_dir  == NULL) {
       yaudit_fatal     ("NAME"    , "directory name must not be NULL (blatant error)");
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   ySCORE_mark ("NDIR"    , '£');
+   ySCORE_mark (myAUDIT.m_yscore, "NDIR"    , '£');
    DEBUG_YENV   yLOG_info    ("a_dir"     , a_dir);
    --rce;  if (a_dir  [0] == '\0') {
       yaudit_fatal     ("NAME"    , "directory name must not be empty");
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   ySCORE_mark ("NDIR"    , '/');
+   ySCORE_mark (myAUDIT.m_yscore, "NDIR"    , '/');
    --rce;  if (a_dir [0] != '/') {
       yaudit_fatal     ("NAME"    , "directory name must be absolute path");
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   ySCORE_mark ("NDIR"   , 'D');
+   ySCORE_mark (myAUDIT.m_yscore, "NDIR"   , 'D');
    /*---(message)------------------------*/
    yURG_msg ('-', "requested dir  %3då%sæ", strlen (a_dir), a_dir);
    /*---(check a_file)-------------------*/
-   ySCORE_mark ("NFILE"   , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "NFILE"   , '°');
    DEBUG_YENV   yLOG_point   ("a_file"     , a_file);
    --rce;  if (a_file == NULL) {
       yaudit_fatal     ("NAME"    , "file name must not be NULL (blatant error)");
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   ySCORE_mark ("NFILE"   , '£');
+   ySCORE_mark (myAUDIT.m_yscore, "NFILE"   , '£');
    DEBUG_YENV   yLOG_info    ("a_file"    , a_file);
    --rce;  if (a_type != YENV_NONE && a_type != YENV_DIR) {
       if (a_file [0] == '\0') {
@@ -129,31 +130,31 @@ yaudit_prepare          (char a_type, char c_flag, char c_naming, char a_dir [LE
          DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
          return rce;
       }
-      ySCORE_mark ("NFILE"   , '/');
+      ySCORE_mark (myAUDIT.m_yscore, "NFILE"   , '/');
    }
-   ySCORE_mark ("NFILE"   , '*');
+   ySCORE_mark (myAUDIT.m_yscore, "NFILE"   , '*');
    --rce;  if (a_type == YENV_DIR) {
       if (a_file [0] != '\0') {
          yaudit_fatal     ("NAME"    , "file name MUST be empty (dir types)");
          DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
          return rce;
       }
-      ySCORE_mark ("NFILE"   , '-');
+      ySCORE_mark (myAUDIT.m_yscore, "NFILE"   , '-');
    }
    if (a_type == YENV_NONE) {
-      if (a_file [0] == '£')    ySCORE_mark ("NFILE"   , '-');
+      if (a_file [0] == '£')    ySCORE_mark (myAUDIT.m_yscore, "NFILE"   , '-');
    }
-   if (ySCORE_value ("NFILE") != '-')  ySCORE_mark ("NFILE"   , '/');
+   if (ySCORE_value (myAUDIT.m_yscore, "NFILE") != '-')  ySCORE_mark (myAUDIT.m_yscore, "NFILE"   , '/');
    --rce;  if (a_file [0] != '\0' && strchr (a_file, '/') != NULL) {
       yaudit_fatal     ("NAME"    , "file name must not have a path (/)");
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   if (ySCORE_value ("NFILE") != '-')  ySCORE_mark ("NFILE"   , 'F');
+   if (ySCORE_value (myAUDIT.m_yscore, "NFILE") != '-')  ySCORE_mark (myAUDIT.m_yscore, "NFILE"   , 'F');
    /*---(message)------------------------*/
    yURG_msg ('-', "requested file %3då%sæ", strlen (a_file), a_file);
    /*---(flags)--------------------------*/
-   ySCORE_mark ("EFLAG"   , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "EFLAG"   , '°');
    --rce;  switch (c_flag) {
    case '!' :  x_check = 'y';  x_force = '!';  x_fix   = 'y';  break;
    case 'F' :  x_check = 'y';  x_force = 'y';  x_fix   = 'y';  break;
@@ -166,10 +167,10 @@ yaudit_prepare          (char a_type, char c_flag, char c_naming, char a_dir [LE
                DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
                return rce;
    }
-   ySCORE_mark ("EFLAG"   , c_flag);
-   ySCORE_mark ("CONFC"   , x_check);
-   ySCORE_mark ("CONFF"   , x_force);
-   ySCORE_mark ("CONFX"   , x_fix);
+   ySCORE_mark (myAUDIT.m_yscore, "EFLAG"   , c_flag);
+   ySCORE_mark (myAUDIT.m_yscore, "CONFC"   , x_check);
+   ySCORE_mark (myAUDIT.m_yscore, "CONFF"   , x_force);
+   ySCORE_mark (myAUDIT.m_yscore, "CONFX"   , x_fix);
    /*---(clear some marks)---------------*/
    if (x_check == '-') ySCORE_nocheck ();
    /*---(save-back)----------------------*/

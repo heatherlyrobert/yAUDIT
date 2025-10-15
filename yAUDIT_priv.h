@@ -38,8 +38,8 @@
 /*········· ··········· ´·····························´········································*/
 #define     P_VERMAJOR  "1.--, production improvements"
 #define     P_VERMINOR  "1.0-, porting from yENV into separate library"
-#define     P_VERNUM    "1.0d"
-#define     P_VERTXT    "all existing unit testing from yENV transferred and passed"
+#define     P_VERNUM    "1.0e"
+#define     P_VERTXT    "updated yAUDIT with ySCORE improvements, still must unit test"
 /*········· ··········· ´·····························´········································*/
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
@@ -87,8 +87,15 @@ typedef struct group     tGROUP;
 typedef struct tm        tTIME;
 
 
-
-extern char  g_print   [LEN_RECD];
+typedef struct cyAUDIT tyAUDIT;
+struct cyAUDIT {
+   /*---(general)-----------*/
+   char      m_print       [LEN_RECD];
+   /*---(ySCORE)------------*/
+   void     *m_yscore;
+   /*---(done)--------------*/
+};
+extern  tyAUDIT  myAUDIT;
 
 
 

@@ -26,12 +26,12 @@ yaudit_remove           (char a_full [LEN_PATH], char a_atype, char a_atdesc [LE
    }
    /*---(header)-------------------------*/
    DEBUG_YENV   yLOG_enter   (__FUNCTION__);
-   ySCORE_mark ("REMOVE"  , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "REMOVE"  , '°');
    /*---(does not exist)-----------------*/
    rc = yENV_exists (a_full);
    DEBUG_YENV   yLOG_complex ("exists"    , "%d/%c", rc, rc);
    --rce;  if (rc < 0 || rc == YENV_NONE) {
-      ySCORE_mark ("REMOVE"  , '?');
+      ySCORE_mark (myAUDIT.m_yscore, "REMOVE"  , '?');
       sprintf (x_msg, "%s (%c) removal impossible, entry does not exist" , a_atdesc, a_atype);
       yaudit_fatal     ("FIXES"   , x_msg);
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
@@ -48,7 +48,7 @@ yaudit_remove           (char a_full [LEN_PATH], char a_atype, char a_atdesc [LE
             return rce;
          }
       } else {
-         ySCORE_mark ("REMOVE"  , '!');
+         ySCORE_mark (myAUDIT.m_yscore, "REMOVE"  , '!');
          sprintf (x_msg, "%s (%c) conflicting entry removal (%c) requires critical force (!), but used (%c)" , a_atdesc, a_atype, c_del, c_force);
          yaudit_fatal     ("FIXES"   , x_msg);
          DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
@@ -66,7 +66,7 @@ yaudit_remove           (char a_full [LEN_PATH], char a_atype, char a_atdesc [LE
             return rce;
          }
       } else {
-         ySCORE_mark ("REMOVE"  , '!');
+         ySCORE_mark (myAUDIT.m_yscore, "REMOVE"  , '!');
          sprintf (x_msg, "%s (%c) conflicting entry removal (%c) requires any force (!y), but used (%c)" , a_atdesc, a_atype, c_del, c_force);
          yaudit_fatal     ("FIXES"   , x_msg);
          DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
@@ -74,7 +74,7 @@ yaudit_remove           (char a_full [LEN_PATH], char a_atype, char a_atdesc [LE
       }
    }
    /*---(message)------------------------*/
-   ySCORE_mark ("REMOVE"  , 'R');
+   ySCORE_mark (myAUDIT.m_yscore, "REMOVE"  , 'R');
    yURG_msg ('-', "%s (%c) conflicting entry removed successfully because of force flag (%c)", a_atdesc, a_atype, c_force);
    /*---(complete)-----------------------*/
    DEBUG_YENV    yLOG_exit    (__FUNCTION__);
@@ -104,12 +104,12 @@ yaudit_create           (char a_full [LEN_PATH], char a_etype, char a_etdesc [LE
    }
    /*---(header)-------------------------*/
    DEBUG_YENV   yLOG_enter   (__FUNCTION__);
-   ySCORE_mark ("CREATE"  , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "CREATE"  , '°');
    /*---(already exists)-----------------*/
    rc = yENV_exists (a_full);
    DEBUG_YENV   yLOG_complex ("exists"    , "%d/%c", rc, rc);
    --rce;  if (rc != YENV_NONE) {
-      ySCORE_mark ("CREATE"  , '?');
+      ySCORE_mark (myAUDIT.m_yscore, "CREATE"  , '?');
       strlcpy (x_tdesc, yENV_typedesc (rc), LEN_TERSE);
       sprintf (x_msg, "%s (%c) creation stopped, FOUND it as %s (%c) already" , a_etdesc, a_etype, x_tdesc, rc);
       yaudit_fatal     ("FIXES"   , x_msg);
@@ -118,7 +118,7 @@ yaudit_create           (char a_full [LEN_PATH], char a_etype, char a_etdesc [LE
    }
    /*---(additions)----------------------*/
    if (c_force != '-') {
-      rc = yENV_touchier (a_etype, a_full, a_eowner, a_egroup, a_eperms, a_emajor, a_eminor, a_etarget);
+      rc = yENV_touchier (a_etype, a_full, a_eowner, a_egroup, a_eperms, a_emajor, a_eminor, a_etarget, '-');
       DEBUG_YENV   yLOG_complex ("touch"     , "%d/%c", rc, rc);
       --rce;  if (rc < 0 || rc == YENV_NONE) {
          sprintf (x_msg, "%s (%c) requested creation (%c) failed (%d/%c)" , a_etdesc, a_etype, c_add, rc, rc);
@@ -127,14 +127,14 @@ yaudit_create           (char a_full [LEN_PATH], char a_etype, char a_etdesc [LE
          return rce;
       }
    } else {
-      ySCORE_mark ("CREATE"  , '!');
+      ySCORE_mark (myAUDIT.m_yscore, "CREATE"  , '!');
       sprintf (x_msg, "%s (%c) requested creation (%c) requires any force (!y), but used (%c)" , a_etdesc, a_etype, c_add, c_force);
       yaudit_fatal     ("FIXES"   , x_msg);
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    /*---(message)------------------------*/
-   ySCORE_mark ("CREATE"  , 'C');
+   ySCORE_mark (myAUDIT.m_yscore, "CREATE"  , 'C');
    yURG_msg ('-', "%s (%c) entry created successfully because of force flag (%c)", a_etdesc, a_etype, c_force);
    /*---(complete)-----------------------*/
    DEBUG_YENV    yLOG_exit    (__FUNCTION__);
@@ -163,12 +163,12 @@ yaudit_update           (char a_full [LEN_PATH], char a_atype, char a_atdesc [LE
    }
    /*---(header)-------------------------*/
    DEBUG_YENV   yLOG_enter   (__FUNCTION__);
-   ySCORE_mark ("UPDATE"  , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "UPDATE"  , '°');
    /*---(does not exist)-----------------*/
    rc = yENV_exists (a_full);
    DEBUG_YENV   yLOG_complex ("exists"    , "%d/%c", rc, rc);
    --rce;  if (rc < 0 || rc == YENV_NONE) {
-      ySCORE_mark ("UPDATE"  , '?');
+      ySCORE_mark (myAUDIT.m_yscore, "UPDATE"  , '?');
       sprintf (x_msg, "%s (%c) update stopped, does not exist" , a_atdesc, a_atype);
       yaudit_fatal     ("FIXES"   , x_msg);
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
@@ -176,7 +176,7 @@ yaudit_update           (char a_full [LEN_PATH], char a_atype, char a_atdesc [LE
    }
    /*---(update)-------------------------*/
    if (c_fix != '-') {
-      rc = yENV_touchier (a_atype, a_full, a_eowner, a_egroup, a_eperms, a_emajor, a_eminor, a_etarget);
+      rc = yENV_touchier (a_atype, a_full, a_eowner, a_egroup, a_eperms, a_emajor, a_eminor, a_etarget, '-');
       DEBUG_YENV   yLOG_complex ("touch"     , "%d/%c", rc, rc);
       --rce;  if (rc < 0 || rc == YENV_NONE) {
          sprintf (x_msg, "%s (%c) requested update (%c) failed (%d/%c)" , a_atdesc, a_atype, c_upd, rc, rc);
@@ -185,14 +185,14 @@ yaudit_update           (char a_full [LEN_PATH], char a_atype, char a_atdesc [LE
          return rce;
       }
    } else {
-      ySCORE_mark ("UPDATE"  , '!');
+      ySCORE_mark (myAUDIT.m_yscore, "UPDATE"  , '!');
       sprintf (x_msg, "%s (%c) requested update (%c) requires fix (y), but used (%c)" , a_atdesc, a_atype, c_upd, c_fix);
       yaudit_fatal     ("FIXES"   , x_msg);
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    /*---(message)------------------------*/
-   ySCORE_mark ("UPDATE"  , 'U');
+   ySCORE_mark (myAUDIT.m_yscore, "UPDATE"  , 'U');
    yURG_msg ('-', "%s (%c) entry updated successfully because of fix flag (%c)", a_atdesc, a_atype, c_fix);
    /*---(complete)-----------------------*/
    DEBUG_YENV    yLOG_exit    (__FUNCTION__);

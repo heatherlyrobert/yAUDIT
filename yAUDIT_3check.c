@@ -43,9 +43,9 @@ yaudit_precheck         (char a_full [LEN_PATH], char a_etype, char a_eowner [LE
    if (r_add    != NULL)   *r_add   = '-';
    if (r_upd    != NULL)   *r_upd   = '-';
    /*---(scores)-------------------------*/
-   ySCORE_mark ("FDEL"    , '-');
-   ySCORE_mark ("FADD"    , '-');
-   ySCORE_mark ("FUPD"    , '-');
+   ySCORE_mark (myAUDIT.m_yscore, "FDEL"    , '-');
+   ySCORE_mark (myAUDIT.m_yscore, "FADD"    , '-');
+   ySCORE_mark (myAUDIT.m_yscore, "FUPD"    , '-');
    /*---(get data)-----------------------*/
    x_atype = yENV_detail (a_full, x_atdesc, NULL, x_aowner, NULL, x_agroup, NULL, x_aperms, NULL, NULL, NULL, &x_amajor, &x_aminor, x_alink, NULL, &x_inode, NULL);
    DEBUG_YENV   yLOG_value   ("detail"    , x_atype);
@@ -54,7 +54,7 @@ yaudit_precheck         (char a_full [LEN_PATH], char a_etype, char a_eowner [LE
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   ySCORE_mark ("CTYPE"   , x_atype);
+   ySCORE_mark (myAUDIT.m_yscore, "CTYPE"   , x_atype);
    /*---(quick out)----------------------*/
    DEBUG_YENV   yLOG_char    ("x_atype"   , x_atype);
    if (x_atype == YENV_NONE && a_etype == YENV_NONE) {
@@ -66,7 +66,7 @@ yaudit_precheck         (char a_full [LEN_PATH], char a_etype, char a_eowner [LE
    else if (a_etype  == YENV_NONE)            { x_del = 'y';            ;            ;  strcat (x_miss, "existance, "); }
    /*---(type changes)-------------------       ----del----; ----add----; ----upd----;*/
    else if (x_atype  != a_etype) {
-      ySCORE_mark ("CTYPE"   , toupper (x_atype));
+      ySCORE_mark (myAUDIT.m_yscore, "CTYPE"   , toupper (x_atype));
       if (strchr ("hs", a_etype) != NULL &&
             strchr ("hs", x_atype) != NULL)   { x_del = 'y'; x_add = 'y';            ;  strcat (x_miss, "type, "     ); }
       else                                    { x_del = '!'; x_add = 'y';            ;  strcat (x_miss, "type, "     ); }
@@ -75,55 +75,55 @@ yaudit_precheck         (char a_full [LEN_PATH], char a_etype, char a_eowner [LE
    if (x_atype == a_etype) {
       switch (a_etype) {
       case YENV_BLOCK : case YENV_CHAR  :
-         ySCORE_mark ("CMAJOR"  , 'j');
-         ySCORE_mark ("CMINOR"  , 'n');
-         if (x_amajor != a_emajor)            { x_del = 'y'; x_add = 'y';            ;  strcat (x_miss, "maj, "      );  ySCORE_mark ("CMAJOR"  , 'J'); }
-         if (x_aminor != a_eminor)            { x_del = 'y'; x_add = 'y';            ;  strcat (x_miss, "min, "      );  ySCORE_mark ("CMINOR"  , 'N'); }
+         ySCORE_mark (myAUDIT.m_yscore, "CMAJOR"  , 'j');
+         ySCORE_mark (myAUDIT.m_yscore, "CMINOR"  , 'n');
+         if (x_amajor != a_emajor)            { x_del = 'y'; x_add = 'y';            ;  strcat (x_miss, "maj, "      );  ySCORE_mark (myAUDIT.m_yscore, "CMAJOR"  , 'J'); }
+         if (x_aminor != a_eminor)            { x_del = 'y'; x_add = 'y';            ;  strcat (x_miss, "min, "      );  ySCORE_mark (myAUDIT.m_yscore, "CMINOR"  , 'N'); }
          break;
       case YENV_SYM   :
          rc = yENV_detail (a_etarget, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-         ySCORE_mark ("CTTYPE"  , rc);
-         if (rc != a_ettype)  ySCORE_mark ("CTTYPE"  , toupper (rc));
-         ySCORE_mark ("CTARGET" , 't');
-         if (strcmp (x_alink, a_etarget) != 0) { x_del = 'y'; x_add = 'y';            ;  strcat (x_miss, "target, "   );  ySCORE_mark ("CTARGET" , 'T'); }
+         ySCORE_mark (myAUDIT.m_yscore, "CTTYPE"  , rc);
+         if (rc != a_ettype)  ySCORE_mark (myAUDIT.m_yscore, "CTTYPE"  , toupper (rc));
+         ySCORE_mark (myAUDIT.m_yscore, "CTARGET" , 't');
+         if (strcmp (x_alink, a_etarget) != 0) { x_del = 'y'; x_add = 'y';            ;  strcat (x_miss, "target, "   );  ySCORE_mark (myAUDIT.m_yscore, "CTARGET" , 'T'); }
 
          break;
       case YENV_HARD  :
          rc = yENV_detail (a_etarget, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, &n, NULL);
-         ySCORE_mark ("CTTYPE"  , rc);
+         ySCORE_mark (myAUDIT.m_yscore, "CTTYPE"  , rc);
          if (rc != a_ettype) {
-            if (a_ettype == YENV_REG && rc == YENV_HARD)  ySCORE_mark ("CTTYPE"  , YENV_REG);
-            else                                          ySCORE_mark ("CTTYPE"  , toupper (rc));
+            if (a_ettype == YENV_REG && rc == YENV_HARD)  ySCORE_mark (myAUDIT.m_yscore, "CTTYPE"  , YENV_REG);
+            else                                          ySCORE_mark (myAUDIT.m_yscore, "CTTYPE"  , toupper (rc));
          }
-         ySCORE_mark ("CTARGET" , 't');
-         if (x_inode != n)                    { x_del = 'y'; x_add = 'y';            ;  strcat (x_miss, "target, "   );  ySCORE_mark ("CTARGET" , 'T'); }
+         ySCORE_mark (myAUDIT.m_yscore, "CTARGET" , 't');
+         if (x_inode != n)                    { x_del = 'y'; x_add = 'y';            ;  strcat (x_miss, "target, "   );  ySCORE_mark (myAUDIT.m_yscore, "CTARGET" , 'T'); }
          break;
       }
    }
    /*---(small fixest)-------------------       ----del----; ----add----; ----upd----;*/
    if (x_atype == a_etype && x_add != 'y' && a_etype != YENV_SYM) {
-      ySCORE_mark ("COWNER"  , 'o');
-      ySCORE_mark ("CGROUP"  , 'g');
-      ySCORE_mark ("CPERMS"  , 'p');
-      if (strcmp (x_aowner, a_eowner) != 0)   {            ;            ; x_upd = 'y';  strcat (x_miss, "owner, "    );  ySCORE_mark ("COWNER"  , 'O'); }
-      if (strcmp (x_agroup, a_egroup) != 0)   {            ;            ; x_upd = 'y';  strcat (x_miss, "group, "    );  ySCORE_mark ("CGROUP"  , 'G'); }
-      if (strcmp (x_aperms, a_eperms) != 0)   {            ;            ; x_upd = 'y';  strcat (x_miss, "perms, "    );  ySCORE_mark ("CPERMS"  , 'P'); }
+      ySCORE_mark (myAUDIT.m_yscore, "COWNER"  , 'o');
+      ySCORE_mark (myAUDIT.m_yscore, "CGROUP"  , 'g');
+      ySCORE_mark (myAUDIT.m_yscore, "CPERMS"  , 'p');
+      if (strcmp (x_aowner, a_eowner) != 0)   {            ;            ; x_upd = 'y';  strcat (x_miss, "owner, "    );  ySCORE_mark (myAUDIT.m_yscore, "COWNER"  , 'O'); }
+      if (strcmp (x_agroup, a_egroup) != 0)   {            ;            ; x_upd = 'y';  strcat (x_miss, "group, "    );  ySCORE_mark (myAUDIT.m_yscore, "CGROUP"  , 'G'); }
+      if (strcmp (x_aperms, a_eperms) != 0)   {            ;            ; x_upd = 'y';  strcat (x_miss, "perms, "    );  ySCORE_mark (myAUDIT.m_yscore, "CPERMS"  , 'P'); }
    }
    /*---(entry fixes)--------------------       ----del----; ----add----; ----upd----;*/
    l = strlen (x_miss);
    if (l > 0) {
-      ySCORE_mark ("CHECK"   , 'Þ');
+      ySCORE_mark (myAUDIT.m_yscore, "CHECK"   , 'Þ');
       if (l > 2)  x_miss [l - 2] = '\0';
       yURG_err ('w', "troubles with entry %s", x_miss);
       rc_final = RC_POSITIVE;
    } else {
-      ySCORE_mark ("CHECK"   , '´');
+      ySCORE_mark (myAUDIT.m_yscore, "CHECK"   , '´');
    }
    /*---(finalize)-----------------------*/
-   if (x_del == '!')  ySCORE_mark ("FDEL"    , '!');
-   if (x_del == 'y')  ySCORE_mark ("FDEL"    , 'r');
-   if (x_add != '-')  ySCORE_mark ("FADD"    , 'c');
-   if (x_upd != '-')  ySCORE_mark ("FUPD"    , 'u');
+   if (x_del == '!')  ySCORE_mark (myAUDIT.m_yscore, "FDEL"    , '!');
+   if (x_del == 'y')  ySCORE_mark (myAUDIT.m_yscore, "FDEL"    , 'r');
+   if (x_add != '-')  ySCORE_mark (myAUDIT.m_yscore, "FADD"    , 'c');
+   if (x_upd != '-')  ySCORE_mark (myAUDIT.m_yscore, "FUPD"    , 'u');
    /*---(save-back)----------------------*/
    if (r_atype  != NULL)   *r_atype = x_atype;
    if (r_atdesc != NULL)   strlcpy (r_atdesc, x_atdesc, LEN_TERSE);

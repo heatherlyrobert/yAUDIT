@@ -19,7 +19,7 @@ yaudit__local           (int a_ruid, char a_ruser [LEN_USER], char a_full [LEN_P
    /*---(header)-------------------------*/
    DEBUG_YENV   yLOG_enter   (__FUNCTION__);
    /*---(scoring)------------------------*/
-   ySCORE_mark ("NLOC"    , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "NLOC"    , '°');
    /*---(set location)-------------------*/
    if (strncmp (a_full, "/tmp", 4) == 0) {
       strcpy (x_root , "/tmp/root/");
@@ -32,8 +32,8 @@ yaudit__local           (int a_ruid, char a_ruser [LEN_USER], char a_full [LEN_P
    DEBUG_YENV   yLOG_info    ("x_home"    , x_home);
    /*---(check root)---------------------*/
    if (strncmp (a_full, x_root, strlen (x_root)) == 0) {
-      ySCORE_mark ("NLOC"    , 'r');
-      ySCORE_mark ("NUSE"    , '°');
+      ySCORE_mark (myAUDIT.m_yscore, "NLOC"    , 'r');
+      ySCORE_mark (myAUDIT.m_yscore, "NUSE"    , '°');
       DEBUG_YENV   yLOG_note    ("file located under root");
       if (a_ruid != 0) {
          sprintf (x_msg, "running as å%sæ, uid (%d); BUT, file in å%sæ (illegal)", a_ruser, a_ruid, x_root);
@@ -42,15 +42,15 @@ yaudit__local           (int a_ruid, char a_ruser [LEN_USER], char a_full [LEN_P
          return rce;
       }
       yURG_msg ('-', "good, running as å%sæ, uid (%d) and file is located in or below å%sæ", a_ruser, a_ruid, x_root);
-      ySCORE_mark ("NUSE"    , 'R');
+      ySCORE_mark (myAUDIT.m_yscore, "NUSE"    , 'R');
       strcpy (t, "root");
       /*---(done)------------------------*/
    }
    /*---(check home)---------------------*/
    else if (strncmp (a_full, x_home, strlen (x_home)) == 0) {
-      ySCORE_mark ("NLOC"    , 'h');
+      ySCORE_mark (myAUDIT.m_yscore, "NLOC"    , 'h');
       strcpy (t, a_full + strlen (x_home));
-      ySCORE_mark ("NUSE"    , '°');
+      ySCORE_mark (myAUDIT.m_yscore, "NUSE"    , '°');
       DEBUG_YENV   yLOG_info    ("t"         , t);
       p = strchr (t, '/');
       DEBUG_YENV   yLOG_point   ("p"         , p);
@@ -73,7 +73,7 @@ yaudit__local           (int a_ruid, char a_ruser [LEN_USER], char a_full [LEN_P
          return rce;
       }
       yURG_msg ('-', "good, running as å%sæ, uid (%d) and file is located in or below å%sæ", a_ruser, a_ruid, t);
-      ySCORE_mark ("NUSE"    , 'H');
+      ySCORE_mark (myAUDIT.m_yscore, "NUSE"    , 'H');
       /*---(done)------------------------*/
    }
    /*---(elsewhere)----------------------*/
@@ -106,7 +106,7 @@ yaudit__central         (int a_ruid, char a_ruser [LEN_USER], char a_full [LEN_P
    /*---(header)-------------------------*/
    DEBUG_YENV   yLOG_enter   (__FUNCTION__);
    /*---(scoring)------------------------*/
-   ySCORE_mark ("NLOC"    , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "NLOC"    , '°');
    /*---(set location)-------------------*/
    if (strncmp (a_full, "/tmp", 4) == 0) {
       strcpy (x_etc  , "/tmp/etc/");
@@ -119,8 +119,8 @@ yaudit__central         (int a_ruid, char a_ruser [LEN_USER], char a_full [LEN_P
    DEBUG_YENV   yLOG_info    ("x_etc"     , x_etc);
    /*---(check etc)----------------------*/
    if (strncmp (a_full, x_etc, strlen (x_etc)) == 0) {
-      ySCORE_mark ("NLOC"    , 'e');
-      ySCORE_mark ("NUSE"    , '°');
+      ySCORE_mark (myAUDIT.m_yscore, "NLOC"    , 'e');
+      ySCORE_mark (myAUDIT.m_yscore, "NUSE"    , '°');
       DEBUG_YENV   yLOG_note    ("file located under root");
       if (a_ruid != 0) {
          sprintf (x_msg, "running as å%sæ, uid (%d); BUT, file in å%sæ (illegal)", a_ruser, a_ruid, x_etc);
@@ -129,12 +129,12 @@ yaudit__central         (int a_ruid, char a_ruser [LEN_USER], char a_full [LEN_P
          return rce;
       }
       yURG_msg ('-', "good, running as å%sæ, uid (%d) and file is located in or below å%sæ", a_ruser, a_ruid, x_etc);
-      ySCORE_mark ("NUSE"    , 'E');
+      ySCORE_mark (myAUDIT.m_yscore, "NUSE"    , 'E');
    }
    /*---(check spool)--------------------*/
    else if (strncmp (a_full, x_spool, strlen (x_spool)) == 0) {
-      ySCORE_mark ("NLOC"    , 's');
-      ySCORE_mark ("NUSE"    , '°');
+      ySCORE_mark (myAUDIT.m_yscore, "NLOC"    , 's');
+      ySCORE_mark (myAUDIT.m_yscore, "NUSE"    , '°');
       p = strrchr (a_full, '/');
       DEBUG_YENV   yLOG_point   ("p"         , p);
       if (p != NULL)  strcpy (t, p + 1);
@@ -159,7 +159,7 @@ yaudit__central         (int a_ruid, char a_ruser [LEN_USER], char a_full [LEN_P
          DEBUG_YENV    yLOG_exitr   (__FUNCTION__, rce);
          return rce;
       }
-      ySCORE_mark ("NUSE"    , 'S');
+      ySCORE_mark (myAUDIT.m_yscore, "NUSE"    , 'S');
    }
    /*---(elsewhere)----------------------*/
    else {
@@ -206,11 +206,11 @@ yaudit_name_location    (char a_type, char c_naming, char a_full [LEN_PATH], cha
       return RC_ACK;
    }
    /*---(set uid)------------------------*/
-   ySCORE_mark ("NLOC"    , 'I');
+   ySCORE_mark (myAUDIT.m_yscore, "NLOC"    , 'I');
    rc = yENV_whoami (NULL, NULL, &x_ruid, NULL, NULL, x_ruser, NULL, NULL, NULL, NULL);
    DEBUG_YENV   yLOG_value   ("whoami"    , rc);
    --rce;  if (rc < 0) {
-      ySCORE_mark ("NLOC"    , '°');
+      ySCORE_mark (myAUDIT.m_yscore, "NLOC"    , '°');
       yaudit_fatal     ("NAME"    , "could not identify current user  (scary)");
       DEBUG_YENV    yLOG_exitr   (__FUNCTION__, rce);
       return rce;

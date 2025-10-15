@@ -24,7 +24,7 @@ yaudit_quality          (char a_type, char c_naming, char a_dir [LEN_PATH], char
    /*---(default)------------------------*/
    if (r_style != NULL)  *r_style = '-';
    if (r_full  != NULL)  strcpy (r_full , "");
-   ySCORE_mark ("NFULL"   , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "NFULL"   , '°');
    /*---(create full)--------------------*/
    rc = yENV_name_full (a_dir, a_file, &x_style, x_full);
    DEBUG_YENV   yLOG_value   ("full"      , rc);
@@ -38,7 +38,7 @@ yaudit_quality          (char a_type, char c_naming, char a_dir [LEN_PATH], char
    DEBUG_YENV    yLOG_complex ("x_full"    , "%3då%sæ", l, x_full);
    /*---(hidden file)--------------------*/
    if (c_naming != YENV_WILD) {
-      ySCORE_mark ("NFULL"   , '´');
+      ySCORE_mark (myAUDIT.m_yscore, "NFULL"   , '´');
       DEBUG_YENV    yLOG_char    ("first char", a_file [0]);
       --rce;  if (a_file [0] == '.') {
          sprintf (x_msg, "file can not be hidden, lead period, in (%c) mode (security risk)", c_naming);
@@ -48,7 +48,7 @@ yaudit_quality          (char a_type, char c_naming, char a_dir [LEN_PATH], char
       }
    }
    /*---(check name quality)-------------*/
-   ySCORE_mark ("NFULL"   , '¢');
+   ySCORE_mark (myAUDIT.m_yscore, "NFULL"   , '¢');
    switch (c_naming) {
    case YENV_WILD :  strcpy (x_valid, YSTR_EXTEN);  break;
    default        :  strcpy (x_valid, YSTR_FILES);  break;
@@ -63,12 +63,12 @@ yaudit_quality          (char a_type, char c_naming, char a_dir [LEN_PATH], char
       }
    }
    /*---(success)------------------------*/
-   ySCORE_mark ("NFULL"   , 'n');
+   ySCORE_mark (myAUDIT.m_yscore, "NFULL"   , 'n');
    switch (c_naming) {
    case YENV_WILD :  yURG_msg ('-', "name (%c/%c) is fully qualified and uses only legal characters", x_style, c_naming);                    break;
    default        :  yURG_msg ('-', "name (%c/%c) is fully qualified, not hidden/temp, and uses only legal characters", x_style, c_naming);  break;
    }
-   ySCORE_mark ("NSTYLE"  , x_style);
+   ySCORE_mark (myAUDIT.m_yscore, "NSTYLE"  , x_style);
    /*---(save-back)----------------------*/
    if (r_style != NULL)  *r_style = x_style;
    if (r_full  != NULL)  strlcpy (r_full , x_full, LEN_PATH);
@@ -98,7 +98,7 @@ yaudit_dots             (char c_naming, char a_file [LEN_PATH], char a_prefix [L
    /*---(defense)------------------------*/
    DEBUG_YENV   yLOG_point   ("a_prefix"  , a_prefix);
    --rce;  if (a_prefix == NULL) {
-      ySCORE_mark ("NPREFIX" , '°');
+      ySCORE_mark (myAUDIT.m_yscore, "NPREFIX" , '°');
       yaudit_fatal     ("NAME"    , "prefix standard can not be null (blatant error)");
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
@@ -106,14 +106,14 @@ yaudit_dots             (char c_naming, char a_file [LEN_PATH], char a_prefix [L
    DEBUG_YENV   yLOG_info    ("a_prefix"  , a_prefix);
    DEBUG_YENV   yLOG_point   ("a_suffix"  , a_suffix);
    --rce;  if (a_suffix == NULL) {
-      ySCORE_mark ("NSUFFIX" , '°');
+      ySCORE_mark (myAUDIT.m_yscore, "NSUFFIX" , '°');
       yaudit_fatal     ("NAME"    , "suffix standard can not be null (blatant error)");
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    DEBUG_YENV   yLOG_info    ("a_suffix"  , a_suffix);
    /*---(initial score)------------------*/
-   ySCORE_mark ("NDOTS"   , '°');
+   ySCORE_mark (myAUDIT.m_yscore, "NDOTS"   , '°');
    /*---(figure minimum)-----------------*/
    if (strcmp (a_prefix, "") != 0)    ++x_min;
    if (strcmp (a_suffix, "") != 0)    ++x_min;
@@ -121,7 +121,7 @@ yaudit_dots             (char c_naming, char a_file [LEN_PATH], char a_prefix [L
    DEBUG_YENV   yLOG_value   ("x_min"     , x_min);
    /*---(check request)------------------*/
    if (x_min == 0) {
-      ySCORE_mark ("NDOTS"   , '·');
+      ySCORE_mark (myAUDIT.m_yscore, "NDOTS"   , '·');
       DEBUG_YENV   yLOG_note    ("no prefix/suffix provided, nothing to check");
       DEBUG_YENV   yLOG_exit    (__FUNCTION__);
       return RC_ACK;
@@ -145,13 +145,13 @@ yaudit_dots             (char c_naming, char a_file [LEN_PATH], char a_prefix [L
       else if (x_min == 1 && c_naming == 'c')  sprintf (x_msg, "need both prefix and suffix, i.e., at least 1 dot (.) separator, but only provided %d (illegal name)", c);
       else if (strcmp (a_prefix, "") != 0)     sprintf (x_msg, "need prefix, i.e. at least 1 dot (.) separator, but provided none (illegal name)");
       else                                     sprintf (x_msg, "need suffix, i.e. at least 1 dot (.) separator, but provided none (illegal name)");
-      ySCORE_mark ("NDOTS"   , '#');
+      ySCORE_mark (myAUDIT.m_yscore, "NDOTS"   , '#');
       yaudit_fatal     ("NAME"    , x_msg);
       DEBUG_YENV   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    /*---(scoring)------------------------*/
-   ySCORE_mark ("NDOTS"   , 'n');
+   ySCORE_mark (myAUDIT.m_yscore, "NDOTS"   , 'n');
    /*---(save-back)----------------------*/
    if (r_beg != NULL)  *r_beg = x_beg;
    if (r_end != NULL)  *r_end = x_end;
