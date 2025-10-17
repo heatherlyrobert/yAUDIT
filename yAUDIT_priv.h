@@ -38,8 +38,8 @@
 /*········· ··········· ´·····························´········································*/
 #define     P_VERMAJOR  "1.--, production improvements"
 #define     P_VERMINOR  "1.0-, porting from yENV into separate library"
-#define     P_VERNUM    "1.0f"
-#define     P_VERTXT    "updated yAUDIT with ySCORE improvements, now all unit-tested"
+#define     P_VERNUM    "1.0g"
+#define     P_VERTXT    "small yAUDIT_7full change to support yJOBS update/unit testing"
 /*········· ··········· ´·····························´········································*/
 #define     P_PRIORITY  "direct, simple, brief, vigorous, and lucid (h.w. fowler)"
 #define     P_PRINCIPAL "[grow a set] and build your wings on the way down (r. bradbury)"
